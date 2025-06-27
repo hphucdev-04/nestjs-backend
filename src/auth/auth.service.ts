@@ -24,12 +24,12 @@ export class AuthService {
     private readonly userService: UserService,
   
   ){}
-  async verifyUser(loginDto: LoginDto) {
+  async verifyUser(email: string, password: string) {
     try {
-      const user = await this.userService.getUser({ email: loginDto.email });
-      const authenticated = await bcrypt.compare(loginDto.password,user.password)
-      if(!authenticate){
-        throw new UnauthorizedException();
+      const user = await this.userService.getUser({email});
+      const authenticated = await bcrypt.compare(password,user.password)
+      if(!authenticated){
+        throw new UnauthorizedException("Invalid email or password");
       }
     } catch (error) {
       throw new UnauthorizedException('');
