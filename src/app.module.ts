@@ -7,16 +7,17 @@ import databaseConfig from './config/database.config';
 import jwtConfig from './config/jwt.config';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
+import appConfig from './config/app.config';
 
 @Module({
   imports: [
-    AuthModule, UserModule,
+    AuthModule,
+    UserModule,
     ConfigModule.forRoot({
       isGlobal: true,
       cache: true,
       envFilePath: '.env',
-      load: [databaseConfig, jwtConfig],
-
+      load: [databaseConfig, jwtConfig, appConfig],
     }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
