@@ -17,13 +17,13 @@ export class User {
   @Prop({ required: true })
   password: string;
 
-  @Prop({ required:true ,trim: true })
+  @Prop({ required: true, trim: true })
   phone: string;
 
-  @Prop({ required:true, trim: true,})
+  @Prop({ required: true, trim: true })
   email: string;
 
-  @Prop({ default: false})
+  @Prop({ default: false })
   isActive?: boolean;
 
   @Prop({
@@ -33,16 +33,16 @@ export class User {
   })
   role?: string;
 
-  @Prop({default:""})
+  @Prop({ default: '' })
   emailVerificationCode?: string;
 
-  @Prop({default:""})
+  @Prop({ default: '' })
   emailVerificationExpires?: Date;
 
-  @Prop({default:""})
+  @Prop({ default: '' })
   resetPasswordCode?: string;
 
-  @Prop({default:""})
+  @Prop({ default: '' })
   resetPasswordExpires?: Date;
 }
 

@@ -8,6 +8,8 @@ import * as bcrypt from 'bcryptjs';
 import { LoginDto } from './dto/login.dto';
 import { UserService } from 'src/user/user.service';
 import passport, { authenticate } from 'passport';
+import { plainToInstance } from 'class-transformer';
+import { UserResponseDto } from 'src/user/dto/user-response.dto';
 
 export type TokenPayload = {
   sub: string;
@@ -22,19 +24,36 @@ export class AuthService {
     private readonly userModel: Model<User>,
     private readonly jwtService: JwtService,
     private readonly userService: UserService,
-  
-  ){}
+  ) {}
+
   async verifyUser(email: string, password: string) {
     try {
-      const user = await this.userService.getUser({email});
-      const authenticated = await bcrypt.compare(password,user.password)
-      if(!authenticated){
-        throw new UnauthorizedException("Invalid email or password");
+      const user = await this.userService.findByEmail(email);
+      const authenticated = await bcrypt.compare(password, user.password);
+      if (!authenticated) {
+        throw new UnauthorizedException('Invalid email or password');
       }
     } catch (error) {
       throw new UnauthorizedException('');
     }
   }
 
-}
+  async signup(createUserDto: CreateUserDto) {
+    const user = await this.userService.createUser(createUserDto);
+    const payload: TokenPayload = {
+      sub: user._id.toString(),
+      email: user.email,
+      role: user.role,
+    };
+    const token = this.jwtService.sign(payload);
+    return {
+      user,
+      token,
+    };
+  }
 
+  async signin(loginDto: LoginDto) {
+  
+
+  }
+}

@@ -13,13 +13,13 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
-        (request: Request) => request?.cookies?.Authentication
+        (request: Request) => request?.cookies?.Authentication,
       ]),
-      secretOrKey: configService.get<string>('jwt.access.secret') as string
+      secretOrKey: configService.get<string>('jwt.access.secret') as string,
     });
   }
 
   async validate(payload: any) {
-    return this.userService.getUser({_id:payload.userId})
+    return this.userService.findById(payload.userId);
   }
 }

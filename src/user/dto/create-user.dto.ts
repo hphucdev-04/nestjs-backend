@@ -53,12 +53,11 @@ export class CreateUserDto {
 
   @IsOptional()
   @IsEnum(UserRole, { message: 'Invalid role' })
-  role: UserRole;
+  role?: UserRole = UserRole.WAITER;
 
   @IsOptional()
   @IsPhoneNumber('VN', { message: 'Invalid phone number' })
   phone?: string;
-
 
   @IsOptional()
   @IsBoolean({ message: 'isActive must be a boolean value' })
