@@ -83,4 +83,8 @@ export class AuthService {
       token,
     };
   }
+
+  async signout(res: Response){
+    this.clearCookie(res);
+  }
 }

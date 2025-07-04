@@ -55,7 +55,13 @@ export class AuthController {
   }
 
   @Post('signout')
-  async sigout() {}
+  @UseGuards(JwtAuthGuard)
+  async signout(@Res({ passthrough: true }) res: Response) {
+    this.authService.signout(res);
+    return {
+      message: 'User signed out successfully',
+    };
+  }
 
   @Get('me')
   @UseGuards(JwtAuthGuard)
