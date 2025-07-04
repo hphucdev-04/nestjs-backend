@@ -7,9 +7,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
 import { LoginDto } from './dto/login.dto';
 import { UserService } from 'src/user/user.service';
-import passport, { authenticate } from 'passport';
-import { plainToInstance } from 'class-transformer';
-import { UserResponseDto } from 'src/user/dto/user-response.dto';
+import { Response } from 'express';
 
 export type TokenPayload = {
   sub: string;
@@ -26,15 +24,32 @@ export class AuthService {
     private readonly userService: UserService,
   ) {}
 
-  async verifyUser(email: string, password: string) {
+  private setCookie(res: Response, token: string) {
+    res.cookie('Authentication', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 24 * 60 * 60 * 1000,
+    });
+  }
+
+  private clearCookie(res: Response) {
+    res.clearCookie('Authentication');
+  }
+
+  async verifyUser(loginDto: LoginDto) {
     try {
-      const user = await this.userService.findByEmail(email);
-      const authenticated = await bcrypt.compare(password, user.password);
+      const user = await this.userService.findByEmail(loginDto.email);
+      const authenticated = await bcrypt.compare(
+        loginDto.password,
+        user.password,
+      );
       if (!authenticated) {
         throw new UnauthorizedException('Invalid email or password');
       }
+      return user;
     } catch (error) {
-      throw new UnauthorizedException('');
+      throw new UnauthorizedException('Invalid email or password');
     }
   }
 
@@ -52,8 +67,20 @@ export class AuthService {
     };
   }
 
-  async signin(loginDto: LoginDto) {
-  
+  async signin(user: any, res: Response) {
+    const payload: TokenPayload = {
+      sub: user._id ? user._id.toString() : user.id.toString(),
+      email: user.email,
+      role: user.role,
+    };
+    const token = this.jwtService.sign(payload);
 
+    // Set cookie
+    this.setCookie(res, token);
+
+    return {
+      user,
+      token,
+    };
   }
 }

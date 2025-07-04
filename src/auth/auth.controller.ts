@@ -8,15 +8,18 @@ import {
   Delete,
   UseGuards,
   Request,
+  Req,
+  Res,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { UpdateUserDto } from 'src/user/dto/update-user.dto';
 import { LoginDto } from './dto/login.dto';
-import { LocalAuthGuard } from 'src/guards/local.guard';
-import { JwtAuthGuard } from 'src/guards/jwt.guard';
+import { LocalAuthGuard } from 'src/auth/guards/local.guard';
+import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import { plainToInstance } from 'class-transformer';
 import { UserResponseDto } from 'src/user/dto/user-response.dto';
+import { Response } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -24,7 +27,7 @@ export class AuthController {
 
   @Post('signup')
   async signup(@Body() createUserDto: CreateUserDto) {
-    const {user, token} = await this.authService.signup(createUserDto);
+    const { user, token } = await this.authService.signup(createUserDto);
     const response = plainToInstance(UserResponseDto, user, {
       excludeExtraneousValues: true,
     });
@@ -37,7 +40,19 @@ export class AuthController {
 
   @Post('signin')
   @UseGuards(LocalAuthGuard)
-  async signin(@Body() loginDto: LoginDto) {}
+  async signin(@Req() req: any, @Res({ passthrough: true }) res: Response) {
+    const { user, token } = await this.authService.signin(req.user, res);
+
+    const response = plainToInstance(UserResponseDto, user, {
+      excludeExtraneousValues: true,
+    });
+
+    return {
+      message: 'User signed in successfully',
+      user: response,
+      accessToken: token,
+    };
+  }
 
   @Post('signout')
   async sigout() {}
