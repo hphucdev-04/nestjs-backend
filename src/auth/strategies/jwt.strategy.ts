@@ -19,12 +19,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
           if (cookieToken) {
             return cookieToken;
           }
-          
+
           const authHeader = request?.headers?.authorization;
           if (authHeader && authHeader.startsWith('Bearer ')) {
             return authHeader.substring(7);
           }
-          
+
           return null;
         },
       ]),

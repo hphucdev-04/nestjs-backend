@@ -10,6 +10,7 @@ import {
   Request,
   Req,
   Res,
+  HttpCode,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
@@ -39,6 +40,7 @@ export class AuthController {
   }
 
   @Post('signin')
+  @HttpCode(200)
   @UseGuards(LocalAuthGuard)
   async signin(@Req() req: any, @Res({ passthrough: true }) res: Response) {
     const { user, token } = await this.authService.signin(req.user, res);

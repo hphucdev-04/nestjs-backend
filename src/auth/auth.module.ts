@@ -12,6 +12,7 @@ import { LocalStrategy } from 'src/auth/strategies/local.strategy';
 
 @Module({
   imports: [
+    UserModule,
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
@@ -23,7 +24,6 @@ import { LocalStrategy } from 'src/auth/strategies/local.strategy';
       }),
       inject: [ConfigService],
     }),
-    UserModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy, LocalStrategy],

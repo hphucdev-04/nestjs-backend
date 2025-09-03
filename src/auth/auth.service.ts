@@ -74,17 +74,14 @@ export class AuthService {
       role: user.role,
     };
     const token = this.jwtService.sign(payload);
-
-    // Set cookie
     this.setCookie(res, token);
-
     return {
       user,
       token,
     };
   }
 
-  async signout(res: Response){
+  async signout(res: Response) {
     this.clearCookie(res);
   }
 }

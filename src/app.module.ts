@@ -7,6 +7,11 @@ import databaseConfig from './config/database.config';
 import jwtConfig from './config/jwt.config';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
+import { TableModule } from './table/table.module';
+import { OrderModule } from './order/order.module';
+import { ProductModule } from './product/product.module';
+import { CategoryModule } from './category/category.module';
+import { InvoiceModule } from './invoice/invoice.module';
 import appConfig from './config/app.config';
 
 @Module({
@@ -26,6 +31,11 @@ import appConfig from './config/app.config';
       }),
       inject: [ConfigService],
     }),
+    TableModule,
+    OrderModule,
+    ProductModule,
+    CategoryModule,
+    InvoiceModule,
   ],
   controllers: [AppController],
   providers: [AppService],

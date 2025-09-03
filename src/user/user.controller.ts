@@ -28,4 +28,23 @@ export class UserController {
       user: response,
     };
   }
+  @Get(':id')
+  async findOne(@Param('id') id: string) {
+    const user = await this.userService.findById(id);
+    const response = plainToInstance(UserResponseDto, user, {
+      excludeExtraneousValues: true,
+    });
+    return {
+      message: 'User retrieved successfully',
+      user: response,
+    };
+  }
+
+  @Post(':id')
+  async deleteUser(@Param('id') id: string) {
+    await this.userService.deleteUser(id);
+    return {
+      message: 'User deleted successfully',
+    };
+  }
 }
